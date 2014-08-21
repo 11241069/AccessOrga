@@ -14,10 +14,14 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    agregararchivo.cpp
+    agregararchivo.cpp \
+    archivo.cpp \
+    campo.cpp
 
 HEADERS  += mainwindow.h \
-    agregararchivo.h
+    agregararchivo.h \
+    archivo.h \
+    campo.h
 
 FORMS    += mainwindow.ui \
     agregararchivo.ui
