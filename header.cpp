@@ -34,10 +34,12 @@ Header::Header(QString direccion)
              campo.setTipo(tokens.at(1));
              campo.setLongitud(tokens.at(2).toInt());
              longitud_registro += tokens.at(2).toInt();
+
              campo.setEsllave(tokens.at(3).toInt());
              campos.append(campo);
              qDebug() << line;
          }
+         longitud_registro +=total_lineas;
 
             line =in.readLine();
             if(line.at(0)=='&'){
@@ -46,6 +48,8 @@ Header::Header(QString direccion)
                 qDebug() << availlist;
                 inicio_registro=total_lineas+2;
         }
+            in.flush();
+            file.close();
 
     }
 

@@ -6,6 +6,8 @@
 #include <iostream>
 #include "dialog_nuevoregistro.h"
 #include <QDebug>
+#include <QMessageBox>
+#include <string>
 using namespace std;
 
 dialog_abrirArchivos::dialog_abrirArchivos(MainWindow *parent) :
@@ -75,6 +77,7 @@ void dialog_abrirArchivos::on_pushButton_clicked()
             }
     }
 
+    filelectura.close();
 }
 
 void dialog_abrirArchivos::on_pushButton_2_clicked()
@@ -86,16 +89,43 @@ void dialog_abrirArchivos::on_pushButton_2_clicked()
         qDebug() << tokens.at(i);
     }
     QFile archivoregistros(header.direccion);
-    if (!archivoregistros.open(QIODevice::WriteOnly | QIODevice::Append))
+    if (!archivoregistros.open(QIODevice::WriteOnly | QIODevice::Append| QIODevice::Text))
         return;
     QTextStream out(&archivoregistros);
 
     for(int i=0;i<tokens.size();i++){
         if(i==tokens.size()-1){
-          out<<tokens.at(i)<<'\n';
+          if(header.campos.at(i).getLongitud()==tokens.at(i).size()){
+              out<<tokens.at(i)<<"\n";
+          }else{
+          if(header.campos.at(i).getLongitud()>tokens.at(i).size()){
+              int diferencia=0;
+              diferencia=((header.campos.at(i).getLongitud())-tokens.at(i).size());
+              out<<tokens.at(i);
+              for(int i=0;i<diferencia;i++){
+              out<<'-';
+              }
+              out<<"\n";
+          }else{
+              QMessageBox::critical(this, "Error", "No Son las longitudes especificas");
+          }
+          }
         }else{
-
-        out<<tokens.at(i)<<',';
+            if(header.campos.at(i).getLongitud()==tokens.at(i).size()){
+                out<<tokens.at(i)<<',';
+            }else{
+            if(header.campos.at(i).getLongitud()>tokens.at(i).size()){
+                int diferencia=0;
+                diferencia=(header.campos.at(i).getLongitud())-(tokens.at(i).size());
+                out<<tokens.at(i);
+                for(int i=0;i<diferencia;i++){
+                out<<'-';
+                }
+                out<<',';
+            }else{
+                QMessageBox::critical(this, "Error", "No Son las longitudes especificas");
+            }
+            }
         }
     }
 
@@ -110,6 +140,7 @@ void dialog_abrirArchivos::on_pushButton_3_clicked()
     QFile filelectura(header.direccion);
     filelectura.open(QIODevice::ReadWrite | QIODevice::Text);
     QTextStream in(&filelectura);
+
     int bandera=0;
     while(!in.atEnd()){
         if(header.inicio_registro<=bandera){
@@ -150,5 +181,61 @@ void dialog_abrirArchivos::on_pushButton_3_clicked()
             }itemsingresados++;
            }
     }
+    filelectura.close();
+}
+
+void dialog_abrirArchivos::on_pushButton_4_clicked()
+{
+    QString buscar=ui->tablabuscar->currentItem()->text();
+    QFile fileborrar(header.direccion);
+    if(!fileborrar.open(QIODevice::ReadWrite | QIODevice::Text)){
+        qDebug()<<"NO lo Podemos Abrir";
+    }else{
+        qDebug()<<"Se Abrio";
+    }
+    QTextStream in(&fileborrar);
+    int lines=0;
+    int borrar=0;
+    int mover=0;
+    int calculando=0;
+    while(!in.atEnd()){
+        if(header.inicio_registro<=lines){
+        QStringList tokens;
+        tokens=in.readLine().split(',');
+            if(buscar==tokens.at(0)){
+                   borrar=calculando;
+            }
+            calculando++;
+        }else{
+            in.readLine();
+
+            mover++;
+        }
+    lines++;
+    }
+    in.flush();
+    in.reset();
+    fileborrar.seek(0);
+    fileborrar.close();
+    QFile a(header.direccion);
+    a.open(QIODevice::ReadWrite | QIODevice::Text);
+    QTextStream aps(&a);
+    int probando=0;
+    for(int i=0;i<mover;i++){
+        QString hola=aps.readLine();
+        probando=aps.pos();
+        qDebug()<<probando;
+        qDebug()<<mover;
+    }
+    if(borrar==0){
+        probando+=borrar*header.longitud_registro;
+    a.seek(probando);
+    }else{
+        probando+=borrar*header.longitud_registro+2;
+    a.seek(probando);
+    }
+    QString avail="*"+header.availlist;
+
+    a.write("*");
 
 }
