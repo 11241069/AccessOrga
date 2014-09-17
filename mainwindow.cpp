@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "dialog_nuevoarchivo.h"
 #include "dialog_abrirarchivos.h"
+#include "dialog_nuevoregistro.h"
 #include "QFileDialog"
 #include <QString>
 #include "header.h"
@@ -34,4 +35,11 @@ void MainWindow::on_pushButton_2_clicked()
     abrir_Archivo.setModal(true);
     abrir_Archivo.exec();
 
+}
+
+void MainWindow::on_pushButton_3_clicked()//Boton para ir al dialog de cruzar
+{
+    dialog_nuevoRegistro nuevo_Registro(this);
+    nuevo_Registro.setModal(true);
+    nuevo_Registro.exec();
 }

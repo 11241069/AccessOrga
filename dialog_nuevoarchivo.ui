@@ -120,12 +120,12 @@
    </item>
    <item>
     <property name="text">
-     <string>Entero</string>
+     <string>int</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>Real</string>
+     <string/>
     </property>
    </item>
   </widget>

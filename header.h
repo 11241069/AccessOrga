@@ -8,12 +8,13 @@ class Header
 {
 public:
     Header();
-    Header(QString nombre_archivo, int n_campos);
+    Header(QString nombre_archivo, int n_campos, QList <Campos> campos);
     Header(QString);
     QString direccion;
     QString nombre_archivo;
+    QString campo_llave;
+    int key;
     int numero_campos;
-
     QList <Campos> campos;
     int longitud_registro;
     int availlist;
@@ -28,7 +29,10 @@ public:
     void setAvaillist(int value);
     int getInicio_registro() const;
     void setInicio_registro(int value);
-
+    int getKey() const;
+    void setKey(int value);
+    QString getCampo_llave() const;
+    void setCampo_llave(const QString &value);
 };
 
 #endif // HEADER_H

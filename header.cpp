@@ -10,14 +10,27 @@ Header::Header()
 {
 }
 
-Header::Header(QString nombre_archivo, int n_campos)
+Header::Header(QString nombre_archivo, int n_campos, QList <Campos> campos)
 {
     this->nombre_archivo = nombre_archivo;
     numero_campos = n_campos;
+    this->campos = campos;
 }
 
 Header::Header(QString direccion)
 {
+    int pleca;
+    QString filename;
+    for(int i = 0; i < direccion.size(); i++){
+        if(direccion.at(i) == '/'){
+            pleca = i;
+        }
+    }
+    for(int i = pleca + 1; i < direccion.size() - 4; i++){
+        filename.append(direccion.at(i));
+    }
+
+    nombre_archivo = filename;
     longitud_registro = 0;
     QFile file(direccion);
         this->direccion=direccion;
@@ -39,19 +52,50 @@ Header::Header(QString direccion)
              campos.append(campo);
              qDebug() << line;
          }
-         longitud_registro +=total_lineas;
 
-            line =in.readLine();
-            if(line.at(0)=='&'){
-                line.remove(0,1);
-                availlist=line.toInt();
-                qDebug() << availlist;
-                inicio_registro=total_lineas+2;
-        }
+         for(int i = 0; i < campos.size(); i++){
+             if(campos.at(i).getEsllave() == 1){
+                 key = i;
+                 campo_llave = campos.at(i).getNombre_campo();
+             }
+         }
+
+
+         while (!in.atEnd()) {
+             QString str = in.readLine();
+             if (str.contains("longitud de registro")) {
+                 availlist = in.pos() + 10;
+             } else if (str.contains("availlist")) {
+                 inicio_registro = in.pos();
+                 break;
+             }
+         }
+
             in.flush();
             file.close();
 
-    }
+
+
+}
+QString Header::getCampo_llave() const
+{
+    return campo_llave;
+}
+
+void Header::setCampo_llave(const QString &value)
+{
+    campo_llave = value;
+}
+
+int Header::getKey() const
+{
+    return key;
+}
+
+void Header::setKey(int value)
+{
+    key = value;
+}
 
 int Header::getInicio_registro() const
 {

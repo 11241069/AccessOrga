@@ -18,14 +18,18 @@ SOURCES += main.cpp\
     header.cpp \
     dialog_nuevoarchivo.cpp \
     dialog_abrirarchivos.cpp \
-    dialog_nuevoregistro.cpp
+    dialog_nuevoregistro.cpp \
+    btree.cpp \
+    btreenode.cpp
 
 HEADERS  += mainwindow.h \
     campos.h \
     header.h \
     dialog_nuevoarchivo.h \
     dialog_abrirarchivos.h \
-    dialog_nuevoregistro.h
+    dialog_nuevoregistro.h \
+    btree.h \
+    btreenode.h
 
 FORMS    += mainwindow.ui \
     dialog_nuevoarchivo.ui \
